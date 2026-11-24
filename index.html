@@ -114,7 +114,7 @@ const N=SP.length-1;
 
 /* ---------- renderer / scene ---------- */
 const cv=$('stage');
-const R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){$('load').firstElementChild.innerHTML='这个浏览器没法开启 3D 画面<small>请用电脑或手机上的 Chrome、Safari、Edge 打开，并确认已开启硬件加速。</small>';throw e}
 R.setPixelRatio(Math.min(devicePixelRatio,2));
 R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();
