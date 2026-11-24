@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="610" viewBox="0 0 520 610">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="20" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="31" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="24" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><g filter="url(#s)"><rect x="147" y="90" width="6" height="470" fill="#6a8a4a"/><rect x="133" y="100" width="34" height="110" rx="17" fill="#8a5a3a"/><rect x="267" y="50" width="6" height="510" fill="#6a8a4a"/><rect x="253" y="60" width="34" height="110" rx="17" fill="#8a5a3a"/><rect x="367" y="130" width="6" height="430" fill="#6a8a4a"/><rect x="353" y="140" width="34" height="110" rx="17" fill="#8a5a3a"/><path d="M43,600 Q41.333333333333336,398.5 10,197 Q51.333333333333336,398.5 71,600 Z" fill="#4c8c5e"/><path d="M86,600 Q86.33333333333333,421.0 59,242 Q96.33333333333333,421.0 114,600 Z" fill="#5ca06c"/><path d="M114,600 Q108.66666666666667,368.5 70,137 Q118.66666666666667,368.5 142,600 Z" fill="#3f7a52"/><path d="M162,600 Q195.0,430.0 233,260 Q205.0,430.0 190,600 Z" fill="#4c8c5e"/><path d="M197,600 Q223.33333333333334,462.0 248,324 Q233.33333333333334,462.0 225,600 Z" fill="#5ca06c"/><path d="M227,600 Q243.0,388.0 247,176 Q253.0,388.0 255,600 Z" fill="#3f7a52"/><path d="M281,600 Q286.6666666666667,406.0 270,212 Q296.6666666666667,406.0 309,600 Z" fill="#4c8c5e"/><path d="M307,600 Q305.3333333333333,465.5 274,331 Q315.3333333333333,465.5 335,600 Z" fill="#5ca06c"/><path d="M348,600 Q382.0,387.0 422,174 Q392.0,387.0 376,600 Z" fill="#3f7a52"/><path d="M378,600 Q399.3333333333333,466.0 414,332 Q409.3333333333333,466.0 406,600 Z" fill="#4c8c5e"/><path d="M424,600 Q429.3333333333333,462.0 412,324 Q439.3333333333333,462.0 452,600 Z" fill="#5ca06c"/></g></g>
+</svg>

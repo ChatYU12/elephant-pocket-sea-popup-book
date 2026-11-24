@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="520" viewBox="0 0 340 520">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="15" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="26" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="19" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><rect x="155" y="150" width="30" height="360" rx="8" fill="#7a4e32"/>
+<path d="M20,60 L260,60 L320,125 L260,190 L20,190 Z" fill="#c99a66" filter="url(#s)"/>
+<path d="M36,76 L254,76 L298,125 L254,174 L36,174 Z" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<text x="150" y="146" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Microsoft YaHei,sans-serif" font-size="66" font-weight="700" fill="#4a2e1a" text-anchor="middle">山坡</text></g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="280" viewBox="0 0 420 280">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="21" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="32" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="25" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><path d="M20,150 L400,150 L330,260 L90,260 Z" fill="#fbfbf7" filter="url(#s)"/>
+<path d="M210,20 L300,150 L120,150 Z" fill="#f0efe8" filter="url(#s)"/>
+<path d="M210,20 L210,150" stroke="#d8d4c8" stroke-width="4"/>
+<path d="M60,170 L360,170" stroke="#d8d4c8" stroke-width="4" stroke-dasharray="10 8"/>
+<path d="M300,196 l8,-14 8,14 -8,8z" fill="#e06d5a"/></g>
+</svg>

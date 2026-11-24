@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="14" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="25" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="18" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><g filter="url(#s)">
+ <rect x="60" y="120" width="170" height="150" rx="10" fill="#c99a66"/><path d="M60,190 L230,190" stroke="#e9cf9a" stroke-width="16"/>
+ <rect x="85" y="20" width="140" height="110" rx="10" fill="#b78452"/><path d="M85,72 L225,72" stroke="#e9cf9a" stroke-width="14"/>
+ <rect x="240" y="170" width="120" height="100" rx="10" fill="#d4a774"/>
+</g>
+<rect x="40" y="270" width="560" height="190" rx="18" fill="#4d9a8f" filter="url(#s)"/>
+<rect x="58" y="288" width="524" height="154" rx="14" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<path d="M600,460 L600,250 Q600,200 650,200 L780,200 Q820,200 850,260 L910,350 Q920,370 920,400 L920,460 Z" fill="#e2b34a" filter="url(#s)"/>
+<path d="M650,230 L770,230 Q795,230 812,262 L860,340 L650,340 Z" fill="#cfe9f0"/>
+<path d="M620,440 L620,262 Q622,222 655,220 L775,220 Q808,222 828,262 L898,372 L900,440" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<rect x="880" y="390" width="40" height="26" rx="6" fill="#fff3b0"/>
+<rect x="20" y="450" width="920" height="40" rx="14" fill="#5a4a3a"/>
+<circle cx="200" cy="520" r="78" fill="#3a3330"/><circle cx="200" cy="520" r="34" fill="#cfc4b4"/><circle cx="200" cy="520" r="56" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<circle cx="760" cy="520" r="78" fill="#3a3330"/><circle cx="760" cy="520" r="34" fill="#cfc4b4"/><circle cx="760" cy="520" r="56" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/></g>
+</svg>
