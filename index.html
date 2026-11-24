@@ -50,6 +50,9 @@ footer{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:fl
 .bub i{display:block;font-style:normal;font-size:12px;color:#8a7764}
 .bub.sfx{background:none;border:0;box-shadow:none;font:24px "ZCOOL KuaiLe",sans-serif;color:#fff;text-shadow:0 2px 0 #1f2c55,0 0 12px rgba(80,170,220,.9)}
 .bub.sfx::after,.bub.sfx::before{display:none}
+.bub.think{background:rgba(255,250,240,.93);border:2px dashed #6b7bb8;border-radius:28px;font-style:italic;color:#2b3466;max-width:300px;padding:10px 16px;box-shadow:0 6px 18px rgba(20,30,80,.25)}
+.bub.think::before{content:"";position:absolute;left:46%;bottom:-16px;width:14px;height:14px;border-radius:50%;background:rgba(255,250,240,.93);border:2px dashed #6b7bb8;margin:0}
+.bub.think::after{content:"";position:absolute;left:40%;bottom:-30px;width:8px;height:8px;border-radius:50%;background:rgba(255,250,240,.93);border:2px dashed #6b7bb8;margin:0}
 @keyframes pop{from{transform:translate(-50%,calc(-100% - 4px)) scale(.6);opacity:0}}
 #hint{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);font-size:13px;color:rgba(255,255,255,.95);text-shadow:0 1px 3px rgba(0,0,0,.45);white-space:nowrap;z-index:2;transition:opacity .4s}
 #load{position:fixed;inset:0;display:grid;place-items:center;background:var(--deep);color:#f3dfb0;z-index:20;font:24px "ZCOOL KuaiLe",sans-serif;transition:opacity .6s;text-align:center;padding:20px}
@@ -378,7 +381,7 @@ const ABORT={};
 function mkR(tok){
   const ck=async p=>{const v=await p;if(tok!==RUN)throw ABORT;return v};
   return{tw:(d,fn,e)=>ck(tween(d,fn,e)),wait:ms=>ck(tween(ms,()=>{})),all:(...ps)=>ck(Promise.all(ps)),
-    say:(a,txt,o={})=>ck(say(a,txt,o)),narr:(txt,o)=>ck(narrate(txt,o)),walk:(a,x,z,o)=>ck(walk(a,x,z,o)),jump:(a,h,d)=>ck(jump(a,h,d)),
+    say:(a,txt,o={})=>ck(say(a,txt,o)),think:(a,txt)=>ck(think(a,txt)),narr:(txt,o)=>ck(narrate(txt,o)),walk:(a,x,z,o)=>ck(walk(a,x,z,o)),jump:(a,h,d)=>ck(jump(a,h,d)),
     cam:(x,z,zoom)=>{camT.x=x*.22;camT.z=CZ+(z-CZ)*.22;camT.zoom=Math.max(.93,zoom)},mood:m=>ck(mood(m,1600)),
     shell:(n,d)=>ck(shellTo(n,d))}}
 
@@ -388,20 +391,30 @@ function bubble(a,txt,cls,ms){const el=document.createElement('div');el.classNam
   if(!cls&&a.name){const i=document.createElement('i');i.textContent=a.name;el.append(i)}el.append(txt);$('bubbles').append(el);
   const b={el,a,until:now+ms};BUBS.push(b);return b}
 function clearBubs(){BUBS.splice(0).forEach(b=>b.el.remove());$('cap').classList.remove('on')}
-let SND=true,voice=null;
+let SND=true,voice=null,VO={},CURA=null;
+fetch('vo/vo.json').then(r=>r.ok?r.json():{}).then(j=>{VO=j||{};for(const v of Object.values(VO)){const a=new Audio();a.preload='auto';a.src='vo/'+v.f}}).catch(()=>{});
 function pickVoice(){const vs=window.speechSynthesis?.getVoices?.()||[];voice=vs.find(v=>/zh[-_]CN/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
+const roleOf=a=>a===dd?'dd':a===mm?'mm':(a===s1||a===s3)?'sh':'mm';
+const voDur=(role,txt)=>VO[role+'|'+txt]?.d;
 function speak(txt,who){return new Promise(res=>{
-  if(!SND||!window.speechSynthesis||!voice)return res();
+  if(!SND)return res();
+  const v=VO[who+'|'+txt];
+  if(v){try{const a=new Audio('vo/'+v.f);CURA=a;const done=()=>{if(CURA===a)CURA=null;res()};a.onended=a.onerror=done;a.play().catch(done);setTimeout(done,v.d*1000+1800)}catch(e){res()}return}
+  if(!window.speechSynthesis||!voice)return res();
   try{const u=new SpeechSynthesisUtterance(txt.replace(/[「」—…（）]/g,' '));u.voice=voice;u.lang=voice.lang;
-    const P={dd:[1.35,1],mm:[1.75,1.08],n:[1,.92]}[who]||[1,1];u.pitch=P[0];u.rate=P[1];
+    const P={dd:[1.35,1],ddt:[1.2,.85],mm:[1.75,1.08],sh:[1.9,1.1],n:[1,.92]}[who]||[1,1];u.pitch=P[0];u.rate=P[1];
     u.onend=u.onerror=()=>res();speechSynthesis.speak(u);setTimeout(res,txt.length*420+2500)}catch(e){res()}})}
+function hush(){try{speechSynthesis.cancel()}catch(e){}if(CURA){try{CURA.pause()}catch(e){}CURA=null}}
 function say(a,txt,o={}){
-  const ms=o.ms||(o.sfx?1100:1000+txt.length*190);
+  const role=roleOf(a),d=voDur(role,txt);
+  const ms=o.ms||(o.sfx?1100:d?d*1000+350:1000+txt.length*190);
   bubble(a,txt,o.sfx?'sfx':'',ms+(o.sfx?200:500));
   if(o.sfx){o.snd&&o.snd();return tween(ms,()=>{})}
-  a.talk=1;return Promise.all([tween(ms,()=>{}),speak(txt,a===dd?'dd':'mm')]).then(()=>{a.talk=0})}
-function narrate(txt,o={}){const c=$('cap');c.textContent=txt;c.classList.add('on');const ms=o.ms||1200+txt.length*170;
+  a.talk=1;return Promise.all([tween(ms,()=>{}),speak(txt,role)]).then(()=>{a.talk=0})}
+function think(a,txt){const d=voDur('ddt',txt),ms=d?d*1000+600:1400+txt.length*210;
+  bubble(a,txt,'think',ms+400);return Promise.all([tween(ms,()=>{}),speak(txt,'ddt')])}
+function narrate(txt,o={}){const c=$('cap');c.textContent=txt;c.classList.add('on');const d=voDur('n',txt),ms=o.ms||(d?d*1000+450:1200+txt.length*170);
   return Promise.all([tween(ms,()=>{}),speak(txt,'n')]).then(()=>c.classList.remove('on'))}
 
 /* ---------- small sound synth ---------- */
@@ -493,6 +506,9 @@ const BEATS=[
   async R=>{R.cam(-.2,-.3,.85);await R.narr('第一个晚上，箱子还没拆完，新屋子里静悄悄的。')},
   async R=>{S.yawn();await R.say(dd,'哈——欠——',{sfx:1,ms:1000});await R.say(dd,'数到一百只小羊了，还是睡不着……')},
   async R=>{await R.walk(dd,-.42,-.2,{alt:'step',speed:.15,hopMs:240,hop:.008});dd.face(1);await R.tw(400,t=>{dd.lean=.05*t});await R.say(dd,'墙上那张画，是我以前的家。');dd.lean=0},
+  async R=>{R.cam(-.42,-.3,.8);const L0=LS.lamp;await R.tw(900,t=>{LS.lamp=L0*(1-.45*t);applyLS()});
+   for(const line of MONO)await R.think(dd,line);
+   await R.tw(900,t=>{LS.lamp=L0*(.55+.45*t);applyLS()})},
   async R=>{dd.setPose('hold');shellSet('pocket');await R.shell('hand',500);await R.shell('ear',700);S.wave(.18,1.8);await R.say(dd,'哗——',{sfx:1,ms:1500})},
   async R=>{await R.narr('壳沿浮起一滴亮晶晶的水。');await R.shell('hand',500);const from=shellG.localToWorld(new THREE.Vector3(0,.03,0));
    await R.tw(500,t=>{dd.lean=t*.16});S.drip();await R.all(dropFall(from,-.12),R.say(dd,'滴',{sfx:1,ms:800}));await R.tw(300,t=>{dd.lean=.16*(1-t)})},
@@ -542,6 +558,7 @@ const BEATS=[
   async R=>{R.cam(0,-.2,1);await R.narr('从那天起，山上也有了一片小小的海。',{ms:3200});await R.say(dd,'— 完 —',{sfx:1,ms:2200})}
  ]
 ];
+const MONO=['新家的屋顶是圆的，窗户也是圆的，像一颗大大的贝壳。','可是这里没有浪声。以前每天晚上，海都会唱着歌，哄我睡觉。','贝壳呀贝壳，你是不是也在想家？','……没关系。明天，我们去认识新朋友吧。'];
 const SP_HUT=()=>SCENE_PROPS.beach.find(a=>a.poses.a.k==='hut');
 
 /* ---------- page state, turning, playing, progress ---------- */
@@ -558,7 +575,7 @@ function prog(){const n=BEATS[cur].length,el=$('prog');el.style.display=n?'flex'
   [...el.children].forEach((c,i)=>{c.className=i<stepI?'done':(i===stepI&&playing?'now':'')});el.setAttribute('aria-valuenow',stepI)}
 function ui(){const s=SP[cur];$('ttl').textContent=s.t;$('sub').textContent=s.sub;$('cnt').textContent=cur?`${String(cur).padStart(2,'0')} / ${String(N).padStart(2,'0')}`:'封面';
   $('bPrev').disabled=cur===0;$('bNext').disabled=cur===N;$('bPlay').textContent=cur===0?'▶ 打开绘本':playing?'■ 停下':(stepI>=BEATS[cur].length?'↻ 再读一遍':'▶ 读这一页');prog()}
-function stop(){RUN++;playing=false;clearBubs();try{speechSynthesis.cancel()}catch(e){}for(const a of ACT())a.talk=0;ui()}
+function stop(){RUN++;playing=false;clearBubs();hush();for(const a of ACT())a.talk=0;ui()}
 function rise(){const list=POPS.filter(a=>a.on).sort((a,b)=>a.order-b.order);list.forEach(a=>a.f=0);
   S.rustle();return Promise.all(list.map((a,i)=>tween(200+i*55,()=>{},x=>x,false).then(()=>tween(650,t=>{a.f=t},eback,false))))}
 async function play(){
@@ -622,14 +639,14 @@ function poke(e){if(playing||T)return;v2.set(e.clientX/innerWidth*2-1,-(e.client
   if(a===wave){S.wave(.4,1.4);bubble(a,'哗啦！','sfx',1100);return}
   if(a===gull){S.gull();bubble(a,'啾！','sfx',1000);return}
   if(a===truck){S.honk();bubble(a,'嘀嘀！','sfx',1000);return}
-  const L=POKE[a.name];if(!L){jump(a,.02,300,false);S.pop();return}bubble(a,L[Math.floor(Math.random()*L.length)],'',1800);jump(a,.04);a===dd?S.pop():S.hoof()}
+  const L=POKE[a.name];if(!L){jump(a,.02,300,false);S.pop();return}const line=L[Math.floor(Math.random()*L.length)];bubble(a,line,'',1800);hush();speak(line,roleOf(a));jump(a,.04);a===dd?S.pop():S.hoof()}
 
 /* ---------- buttons ---------- */
 $('bNext').onclick=()=>{ac();go(cur+1)};$('bPrev').onclick=()=>{ac();go(cur-1)};
 $('bPlay').onclick=()=>{ac();if(playing){stop();camT.x=0;camT.z=CZ;camT.zoom=1}else play()};
 $('bReset').onclick=()=>{camT.x=cur?0:.5;camT.z=CZ;camT.zoom=cur?1:.82;PTR.x=PTR.y=0;USER.az=Math.round(USER.az/360)*360;USER.el=54;USER.zoom=1};
 $('bRotL').onclick=()=>{USER.az+=45};$('bRotR').onclick=()=>{USER.az-=45};
-$('bSnd').onclick=e=>{SND=!SND;e.currentTarget.textContent='声音：'+(SND?'开':'关');e.currentTarget.setAttribute('aria-pressed',SND);if(!SND)try{speechSynthesis.cancel()}catch(_){}};
+$('bSnd').onclick=e=>{SND=!SND;e.currentTarget.textContent='声音：'+(SND?'开':'关');e.currentTarget.setAttribute('aria-pressed',SND);if(!SND)hush()};
 const SCN_NAME={beach:'沙滩',road:'山路',hill:'山坡',room:'圆屋里',pond:'池塘边'};
 $('tocList').innerHTML=SP.map((s,i)=>`<li><button data-i="${i}"><span>${i?String(i).padStart(2,'0'):'封面'}</span>${s.t}${s.scene?`<em>${SCN_NAME[s.scene]}</em>`:''}</button></li>`).join('');
 $('tocList').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('toc').classList.remove('on');go(+b.dataset.i)};

@@ -8,4 +8,6 @@
 - `art/*.webp`：角色和场景拆件（原始资产图裁切压缩 + SVG 预渲染）
 - `art/svg/`：新增场景的毛毡风 SVG 源文件
 - `tools/gen_svg.py`：生成这些 SVG 的脚本
-- `SCRIPT.md`：互动脚本（每页的动作节拍和台词）
+- `vo/`：全部台词、旁白和独白的配音（Kokoro-82M v1.0 中文音色，Apache 2.0），`vo/vo.json` 是台词到音频的对照表
+- `tools/gen_vo.py`、`tools/kokoro_synth.py`：从 `index.html` 抽取台词并生成配音的脚本
+- `SCRIPT.md`：互动脚本（每页的动作节拍、台词和配音说明）
