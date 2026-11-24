@@ -16,7 +16,7 @@
 :root{--a:#f2c7a5;--b:#8f7c9e;--ink:#2b2420;--paper:#f6eedf;--mustard:#d9a326;--deep:#1f2c55}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(180deg,var(--a),var(--b));color:var(--ink);font:16px/1.55 "Noto Serif SC",serif;-webkit-tap-highlight-color:transparent}
-#stage{position:fixed;inset:0;touch-action:none;cursor:grab}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #stage.drag{cursor:grabbing}
 header{position:fixed;left:16px;top:12px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none;z-index:5}
 .brand{pointer-events:auto;background:rgba(246,238,223,.88);border-radius:14px;padding:8px 14px 9px;box-shadow:0 6px 20px rgba(20,20,40,.18)}
@@ -553,7 +553,7 @@ function fitD(){const a=innerWidth/innerHeight,v=34*PI/180,hf=2*Math.atan(Math.t
 function placeCam(dt){const k=1-Math.exp(-dt*2.2);for(const q of['x','z','zoom'])camC[q]+=(camT[q]-camC[q])*k;camC.px+=(PTR.x-camC.px)*k;camC.py+=(PTR.y-camC.py)*k;
   const D=fitD()*camC.zoom,el=(54+camC.py*4)*PI/180,az=camC.px*.07;
   cam.position.set(camC.x+Math.sin(az)*Math.cos(el)*D,Math.sin(el)*D,camC.z+Math.cos(az)*Math.cos(el)*D);cam.lookAt(camC.x,0,camC.z)}
-function resize(){R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+function resize(){R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight,true);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);
 
 /* ---------- input: drag to turn, tap to poke ---------- */
