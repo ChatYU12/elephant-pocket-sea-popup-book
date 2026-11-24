@@ -54,7 +54,7 @@ footer{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:fl
 #toc ol{list-style:none;margin:0;padding:0}
 #toc li button{width:100%;text-align:left;margin:4px 0;box-shadow:none;background:#efe3cc;border-radius:12px;display:flex;gap:10px}
 #toc li button span{color:#8a7764;font-variant-numeric:tabular-nums}
-@media(max-width:600px){.brand b{font-size:24px}.brand span{display:none}.tools button{padding:0 12px;font-size:14px}#hint{display:none}.bar .t strong{font-size:17px}#cap{bottom:92px;font-size:15px}}
+@media(max-width:600px){.brand b{font-size:20px;white-space:nowrap}.brand span{display:none}.tools button{padding:0 12px;font-size:14px}#hint{display:none}.bar .t strong{font-size:17px}#cap{bottom:92px;font-size:15px}}
 @media(prefers-reduced-motion:reduce){.bub{animation:none}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -315,7 +315,7 @@ function mkR(tok){
     narr:(txt,o)=>ck(narrate(txt,o)),
     walk:(a,x,z,o)=>ck(walk(a,x,z,o)),
     jump:(a,h,d)=>ck(jump(a,h,d)),
-    cam:(x,z,zoom,d)=>{camT.x=x;camT.z=z;camT.zoom=zoom},
+    cam:(x,z,zoom,d)=>{camT.x=x*.22;camT.z=CZ+(z-CZ)*.22;camT.zoom=Math.max(.93,zoom)},
     mood:m=>ck(mood(m,1600)),
   };return R}
 
@@ -465,7 +465,7 @@ const BEATS=[
   await R.tw(900,t=>{wave.at(lerp(x0,p5.x,t),lerp(z0,p5.z,t))});
   R.cam(.05,-.15,1);S.wave(.5,5.5);
   let said=false,lx=p5.x;
-  await R.tw(5600,t=>{const u=lerp(U5,1,t),q=curve.getPointAt(u);if(Math.abs(q.x-lx)>.002)wave.face(q.x>lx?1:-1);lx=q.x;wave.at(q.x,q.z);wave.sc=lerp(1,.38,t);RB.b=u;camT.x=lerp(-.3,.5,t);
+  await R.tw(5600,t=>{const u=lerp(U5,1,t),q=curve.getPointAt(u);if(Math.abs(q.x-lx)>.002)wave.face(q.x>lx?1:-1);lx=q.x;wave.at(q.x,q.z);wave.sc=lerp(1,.38,t);RB.b=u;camT.x=lerp(-.07,.11,t);
     if(t>.42&&!said){said=true;bubble(s1,'咩……（梦话）','',1600)}},x=>x);
   S.wave(.35,2.2);
   await R.all(R.tw(1400,t=>{wave.sc=.38*(1-t);FX.water=eout(t)}),R.say(wave,'哗啦啦……',{sfx:1,ms:1300}));
@@ -531,7 +531,7 @@ async function play(){
   if(cur===5)mood('night',10,false);
   const tok=RUN;playing=true;ui();
   try{await BEATS[cur](mkR(tok))}catch(e){if(e!==ABORT)console.error(e)}
-  if(tok===RUN){playing=false;ui();camT.x=0;camT.z=-.12;camT.zoom=1}
+  if(tok===RUN){playing=false;ui();camT.x=0;camT.z=CZ;camT.zoom=1}
 }
 function startTurn(dir){
   if(T)return false;const to=cur+dir;if(to<0||to>N)return false;
@@ -539,7 +539,7 @@ function startTurn(dir){
 function animTurn(end){const p0=T.p,d=Math.abs(end-p0)*1100+150;T.anim=true;
   return tween(d,t=>{T.p=lerp(p0,end,t);setLeaf(T.p)},eio,false).then(()=>{const done=(T.dir>0&&end===1)||(T.dir<0&&end===0);
     if(done){const to=T.to;$('hint').style.opacity=0;cur=to;INIT[cur]();for(const a of POPS)a.f=0;T=null;setStatic();ui();if(SP[cur].light)mood(SP[cur].light,1200,false);
-      camT.x=cur?0:.5;camT.z=-.12;camT.zoom=cur?1:.82;
+      camT.x=cur?0:.5;camT.z=CZ;camT.zoom=cur?1:.82;
       rise().then(()=>{if(cur===to&&!T&&cur>0)play()})}
     else{T=null;setStatic();ui()}})}
 function go(i){if(T||i===cur)return;const dir=i>cur?1:-1;
@@ -547,8 +547,9 @@ function go(i){if(T||i===cur)return;const dir=i>cur?1:-1;
   if(startTurn(dir))animTurn(dir>0?1:0)}
 
 /* ---------- camera ---------- */
-const camT={x:.5,z:-.12,zoom:.82}, camC={x:.5,z:-.12,zoom:.82,px:0,py:0}, PTR={x:0,y:0};
-function fitD(){const a=innerWidth/innerHeight,v=34*PI/180,hf=2*Math.atan(Math.tan(v/2)*a);return Math.max(1.22/Math.tan(hf/2),1.05/Math.tan(v/2))}
+const camT={x:.5,z:.02,zoom:.82}, camC={x:.5,z:.02,zoom:.82,px:0,py:0}, PTR={x:0,y:0};
+const CZ=.02;
+function fitD(){const a=innerWidth/innerHeight,v=34*PI/180,hf=2*Math.atan(Math.tan(v/2)*a);return Math.max(1.3/Math.tan(hf/2),1.16/Math.tan(v/2))}
 function placeCam(dt){const k=1-Math.exp(-dt*2.2);for(const q of['x','z','zoom'])camC[q]+=(camT[q]-camC[q])*k;camC.px+=(PTR.x-camC.px)*k;camC.py+=(PTR.y-camC.py)*k;
   const D=fitD()*camC.zoom,el=(54+camC.py*4)*PI/180,az=camC.px*.07;
   cam.position.set(camC.x+Math.sin(az)*Math.cos(el)*D,Math.sin(el)*D,camC.z+Math.cos(az)*Math.cos(el)*D);cam.lookAt(camC.x,0,camC.z)}
@@ -580,8 +581,8 @@ function poke(e){if(playing||T)return;v2.set(e.clientX/innerWidth*2-1,-(e.client
 
 /* ---------- buttons ---------- */
 $('bNext').onclick=()=>{ac();go(cur+1)};$('bPrev').onclick=()=>{ac();go(cur-1)};
-$('bPlay').onclick=()=>{ac();if(playing){stop();camT.x=0;camT.z=-.12;camT.zoom=1}else play()};
-$('bReset').onclick=()=>{camT.x=cur?0:.5;camT.z=-.12;camT.zoom=cur?1:.82;PTR.x=PTR.y=0};
+$('bPlay').onclick=()=>{ac();if(playing){stop();camT.x=0;camT.z=CZ;camT.zoom=1}else play()};
+$('bReset').onclick=()=>{camT.x=cur?0:.5;camT.z=CZ;camT.zoom=cur?1:.82;PTR.x=PTR.y=0};
 $('bSnd').onclick=e=>{SND=!SND;e.currentTarget.textContent='声音：'+(SND?'开':'关');e.currentTarget.setAttribute('aria-pressed',SND);if(!SND)try{speechSynthesis.cancel()}catch(_){}};
 $('tocList').innerHTML=SP.map((s,i)=>`<li><button data-i="${i}"><span>${i?String(i).padStart(2,'0'):'封面'}</span>${s.t}</button></li>`).join('');
 $('tocList').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('toc').classList.remove('on');go(+b.dataset.i)};
