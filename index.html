@@ -18,6 +18,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(180deg,var(--a),var(--b));color:var(--ink);font:16px/1.55 "Noto Serif SC",serif;-webkit-tap-highlight-color:transparent}
 #stage{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #stage.drag{cursor:grabbing}
+#stage.orbit{cursor:move}
 header{position:fixed;left:16px;top:12px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;pointer-events:none;z-index:5}
 .brand{pointer-events:auto;background:rgba(246,238,223,.88);border-radius:14px;padding:8px 14px 9px;box-shadow:0 6px 20px rgba(20,20,40,.18)}
 .brand b{display:block;font:32px/1.05 "ZCOOL KuaiLe",sans-serif;color:var(--deep)}
@@ -61,7 +62,7 @@ footer{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:fl
 #toc li button{width:100%;text-align:left;margin:4px 0;box-shadow:none;background:#efe3cc;border-radius:12px;display:flex;gap:10px;align-items:center}
 #toc li button span{color:#8a7764;font-variant-numeric:tabular-nums;min-width:2.4em}
 #toc li button em{margin-left:auto;font-style:normal;font-size:13px;color:#8a7764}
-@media(max-width:600px){.brand b{font-size:20px;white-space:nowrap}.brand span{display:none}.tools button{padding:0 12px;font-size:14px}#hint{display:none}.bar{gap:8px;padding-left:12px}.bar .t strong{font-size:16px}.count{display:none}#cap{bottom:100px;font-size:15px}.arrow{width:44px}}
+@media(max-width:600px){#bRotL,#bRotR{width:44px;padding:0}.brand b{font-size:20px;white-space:nowrap}.brand span{display:none}.tools button{padding:0 12px;font-size:14px}#hint{display:none}.bar{gap:8px;padding-left:12px}.bar .t strong{font-size:16px}.count{display:none}#cap{bottom:100px;font-size:15px}.arrow{width:44px}}
 @media(prefers-reduced-motion:reduce){.bub{animation:none}.prog i.now::after{animation:none;transform:scaleX(.5)}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -72,13 +73,15 @@ footer{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:fl
 <header>
   <div class="brand"><b>大象的口袋海</b><span>一本会动的毛毡立体书</span></div>
   <div class="tools">
+    <button id="bRotL" aria-label="向左转" title="向左转（Q）">↺</button>
+    <button id="bRotR" aria-label="向右转" title="向右转（E）">↻</button>
     <button id="bReset">重置视角</button>
     <button id="bToc">目录</button>
     <button id="bSnd" aria-pressed="true">声音：开</button>
   </div>
 </header>
 <div id="cap"></div>
-<div id="hint">拖动书页翻页 · 点一点小象和小羊</div>
+<div id="hint">拖动书页翻页 · 拖动书外空白处转动 · 滚轮缩放</div>
 <footer>
   <button class="arrow" id="bPrev" aria-label="上一页">‹</button>
   <div class="bar">
@@ -256,7 +259,7 @@ const POPS=[], geo1=new THREE.PlaneGeometry(1,1).translate(0,.5,0);
 class Actor{
   constructor(poses,h,x,z,o={}){
     this.poses=poses;this.h=h;this.dir=o.dir||1;this.sc=1;this.lean=0;this.jump=0;this.lift=0;this.f=0;this.on=false;this.talk=0;this.ph=Math.random()*9;
-    this.sway=o.sway??.012;this.order=o.order??5;this.name=o.name;this.scene=o.scene;this.home=[x,z,o.lift||0];this.bob=o.bob||0;this.drift=o.drift||0;
+    this.sway=o.sway??.012;this.order=o.order??5;this.name=o.name;this.scene=o.scene;this.home=[x,z,o.lift||0];this.bob=o.bob||0;this.drift=o.drift||0;this.bb=!['wall','mount','sea_far','sea_front','hill'].includes(Object.values(poses)[0].k);
     this.g=new THREE.Group();this.hinge=new THREE.Group();this.body=new THREE.Group();
     this.mat=new THREE.MeshStandardMaterial({alphaTest:.5,side:THREE.DoubleSide,roughness:1,emissive:'#ffffff',emissiveIntensity:.1});CUT_MATS.push(this.mat);
     this.mesh=new THREE.Mesh(geo1,this.mat);this.mesh.castShadow=true;this.mesh.userData.actor=this;
@@ -269,8 +272,9 @@ class Actor{
   face(d){this.dir=d;return this}
   reset(){this.at(this.home[0],this.home[1]);this.lift=this.home[2];this.lean=0;this.jump=0;this.sc=1;this.talk=0}
   top(){return this.mesh.localToWorld(new THREE.Vector3(0,1.04,0))}
-  update(t,G){
+  update(t,G,yaw){
     this.g.visible=this.on&&this.f*G>.001;
+    this.g.rotation.y=this.bb?yaw:0;
     this.hinge.rotation.x=-(1-this.f*G)*PI/2;
     const flip=this.nat?this.dir*this.nat:1,s=this.sc,H=this.H;
     const sy=this.pose==='sleep'?1+.03*Math.sin(t*2.1+this.ph):1;
@@ -577,25 +581,38 @@ function go(i){if(T||i===cur||i<0||i>N)return;const dir=i>cur?1:-1;
 
 /* ---------- camera ---------- */
 const CZ=.02;
-const camT={x:.5,z:CZ,zoom:.82},camC={x:.5,z:CZ,zoom:.82,px:0,py:0},PTR={x:0,y:0};
+const camT={x:.5,z:CZ,zoom:.82},camC={x:.5,z:CZ,zoom:.82,px:0,py:0,az:0,el:54,uz:1},PTR={x:0,y:0};
+const USER={az:0,el:54,zoom:1};
 function fitD(){const a=innerWidth/innerHeight,v=34*PI/180,hf=2*Math.atan(Math.tan(v/2)*a);return Math.max(1.3/Math.tan(hf/2),1.16/Math.tan(v/2))}
-function placeCam(dt){const k=1-Math.exp(-dt*2.2);for(const q of['x','z','zoom'])camC[q]+=(camT[q]-camC[q])*k;camC.px+=(PTR.x-camC.px)*k;camC.py+=(PTR.y-camC.py)*k;
-  const D=fitD()*camC.zoom,el=(54+camC.py*4)*PI/180,az=camC.px*.07;
+function placeCam(dt){const k=1-Math.exp(-dt*2.2),k2=1-Math.exp(-dt*9);for(const q of['x','z','zoom'])camC[q]+=(camT[q]-camC[q])*k;camC.px+=(PTR.x-camC.px)*k;camC.py+=(PTR.y-camC.py)*k;
+  camC.az+=(USER.az-camC.az)*k2;camC.el+=(USER.el-camC.el)*k2;camC.uz+=(USER.zoom-camC.uz)*k2;
+  const D=fitD()*camC.zoom*camC.uz,el=(camC.el+camC.py*3)*PI/180,az=camC.az*PI/180+camC.px*.06;
   cam.position.set(camC.x+Math.sin(az)*Math.cos(el)*D,Math.sin(el)*D,camC.z+Math.cos(az)*Math.cos(el)*D);cam.lookAt(camC.x,0,camC.z)}
 function resize(){R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight,true);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
 addEventListener('resize',resize);
 
 /* ---------- input ---------- */
 const ray=new THREE.Raycaster(),v2=new THREE.Vector2();let DR=null;
-cv.addEventListener('pointerdown',e=>{ac();DR={x:e.clientX,y:e.clientY,t:false};cv.setPointerCapture(e.pointerId)});
-cv.addEventListener('pointermove',e=>{PTR.x=(e.clientX/innerWidth-.5)*2;PTR.y=(e.clientY/innerHeight-.5)*2;
+const PTS=new Map();let PINCH=null;
+function onBook(e){v2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(v2,cam);return ray.intersectObject(book,true).some(h=>h.object.visible&&h.object!==table)}
+cv.addEventListener('pointerdown',e=>{ac();PTS.set(e.pointerId,{x:e.clientX,y:e.clientY});cv.setPointerCapture(e.pointerId);
+  if(PTS.size===2){const [a,b]=[...PTS.values()];PINCH={d:Math.hypot(a.x-b.x,a.y-b.y),z:USER.zoom,mx:(a.x+b.x)/2,my:(a.y+b.y)/2,az:USER.az,el:USER.el};if(DR&&DR.t&&T&&!T.anim)animTurn(T.dir>0?0:1);DR=null;return}
+  const orbit=e.button===2||e.shiftKey||!onBook(e);
+  DR={x:e.clientX,y:e.clientY,t:false,orbit,az:USER.az,el:USER.el};if(orbit)cv.classList.add('orbit')});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('wheel',e=>{e.preventDefault();USER.zoom=clamp(USER.zoom*(1+e.deltaY*.0012),.45,1.7)},{passive:false});
+cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){PTR.x=(e.clientX/innerWidth-.5)*2;PTR.y=(e.clientY/innerHeight-.5)*2}
+  if(PTS.has(e.pointerId))PTS.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(PINCH&&PTS.size===2){const [a,b]=[...PTS.values()],d=Math.hypot(a.x-b.x,a.y-b.y);USER.zoom=clamp(PINCH.z*PINCH.d/Math.max(20,d),.45,1.7);
+    USER.az=PINCH.az-((a.x+b.x)/2-PINCH.mx)*.35;USER.el=clamp(PINCH.el+((a.y+b.y)/2-PINCH.my)*.2,18,84);return}
   if(!DR)return;const dx=e.clientX-DR.x;
-  if(!DR.t&&Math.abs(dx)>14&&!T){const dir=dx<0?1:-1;if(startTurn(dir)){DR.t=true;cv.classList.add('drag');$('hint').style.opacity=0}}
-  if(DR.t&&T&&!T.anim){const q=clamp(Math.abs(dx)/(innerWidth*.45));T.p=T.dir>0?q:1-q;setLeaf(T.p)}});
-cv.addEventListener('pointerup',e=>{cv.classList.remove('drag');if(!DR)return;const d=DR;DR=null;
+  if(DR.orbit){if(Math.hypot(dx,e.clientY-DR.y)>4)DR.moved=true;USER.az=DR.az-dx*.4;USER.el=clamp(DR.el+(e.clientY-DR.y)*.25,18,84);return}
+  if(!DR.t&&Math.abs(dx)>14&&!T){const flip=Math.cos(camC.az*PI/180)<0?-1:1,dir=(dx<0?1:-1)*flip;DR.flip=flip;if(startTurn(dir)){DR.t=true;cv.classList.add('drag');$('hint').style.opacity=0}}
+  if(DR.t&&T&&!T.anim){const q=clamp(dx*-(DR.flip||1)*T.dir/(innerWidth*.45));T.p=T.dir>0?q:1-q;setLeaf(T.p)}});
+cv.addEventListener('pointerup',e=>{PTS.delete(e.pointerId);if(PTS.size<2)PINCH=null;cv.classList.remove('drag','orbit');if(!DR)return;const d=DR;DR=null;if(d.orbit){if(!d.moved)poke(e);return}
   if(d.t&&T&&!T.anim){const p=T.dir>0?T.p:1-T.p;animTurn(p>.28?(T.dir>0?1:0):(T.dir>0?0:1));return}
   if(Math.hypot(e.clientX-d.x,e.clientY-d.y)<8)poke(e)});
-cv.addEventListener('pointercancel',()=>{DR=null;if(T&&!T.anim)animTurn(T.dir>0?0:1)});
+cv.addEventListener('pointercancel',e=>{PTS.delete(e.pointerId);PINCH=null;cv.classList.remove('drag','orbit');DR=null;if(T&&!T.anim)animTurn(T.dir>0?0:1)});
 const POKE={'豆豆':['我叫豆豆！','贝壳里住着海哦。','嘿嘿，你好呀～','要不要一起听海？'],'毛毛':['咩～','我最熟悉这片山坡啦！','你好呀！'],'小羊':['咩！','咩咩～']};
 function poke(e){if(playing||T)return;v2.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(v2,cam);
   const hits=ray.intersectObjects([...POPS.filter(a=>a.on&&a.g.visible).map(a=>a.mesh),water]);if(!hits.length)return;
@@ -610,14 +627,15 @@ function poke(e){if(playing||T)return;v2.set(e.clientX/innerWidth*2-1,-(e.client
 /* ---------- buttons ---------- */
 $('bNext').onclick=()=>{ac();go(cur+1)};$('bPrev').onclick=()=>{ac();go(cur-1)};
 $('bPlay').onclick=()=>{ac();if(playing){stop();camT.x=0;camT.z=CZ;camT.zoom=1}else play()};
-$('bReset').onclick=()=>{camT.x=cur?0:.5;camT.z=CZ;camT.zoom=cur?1:.82;PTR.x=PTR.y=0};
+$('bReset').onclick=()=>{camT.x=cur?0:.5;camT.z=CZ;camT.zoom=cur?1:.82;PTR.x=PTR.y=0;USER.az=Math.round(USER.az/360)*360;USER.el=54;USER.zoom=1};
+$('bRotL').onclick=()=>{USER.az+=45};$('bRotR').onclick=()=>{USER.az-=45};
 $('bSnd').onclick=e=>{SND=!SND;e.currentTarget.textContent='声音：'+(SND?'开':'关');e.currentTarget.setAttribute('aria-pressed',SND);if(!SND)try{speechSynthesis.cancel()}catch(_){}};
 const SCN_NAME={beach:'沙滩',road:'山路',hill:'山坡',room:'圆屋里',pond:'池塘边'};
 $('tocList').innerHTML=SP.map((s,i)=>`<li><button data-i="${i}"><span>${i?String(i).padStart(2,'0'):'封面'}</span>${s.t}${s.scene?`<em>${SCN_NAME[s.scene]}</em>`:''}</button></li>`).join('');
 $('tocList').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('toc').classList.remove('on');go(+b.dataset.i)};
 $('bToc').onclick=()=>$('toc').classList.add('on');$('bTocX').onclick=()=>$('toc').classList.remove('on');
 $('toc').onclick=e=>{if(e.target.id==='toc')$('toc').classList.remove('on')};
-addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);if(e.key===' '){e.preventDefault();$('bPlay').click()}});
+addEventListener('keydown',e=>{if(e.key==='q'||e.key==='Q')USER.az+=15;if(e.key==='e'||e.key==='E')USER.az-=15;if(e.key==='ArrowUp')USER.el=clamp(USER.el+5,18,84);if(e.key==='ArrowDown')USER.el=clamp(USER.el-5,18,84);if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);if(e.key===' '){e.preventDefault();$('bPlay').click()}});
 
 /* ---------- loop ---------- */
 let last=performance.now();const V=new THREE.Vector3();
@@ -626,7 +644,7 @@ function frame(ts){
   for(let i=TW.length-1;i>=0;i--){const w=TW[i];if(w.tok!==null&&w.tok!==RUN){TW.splice(i,1);w.res();continue}
     const t=clamp((now-w.t0)/w.d);w.fn(w.ease(t));if(t>=1){TW.splice(i,1);w.res()}}
   const prog=T?(T.dir>0?T.p:1-T.p):0,G=T?clamp(1-prog/.3):1,t=ts/1000;
-  for(const a of POPS)a.update(t,G);
+  const yaw=camC.az*PI/180;for(const a of POPS)a.update(t,G,yaw);
   const sw=.05*SH.k;shellG.visible=SH.k>.02&&dd.on;shellG.position.set(SH.x,SH.y,.012);shellM.scale.set(sw*asp('shell')*SH.sw,sw,1);shellM.position.y=-.5*sw;
   if(rib){rib.visible=SC==='hill'&&RB.b>RB.a+.001&&G>.05;const i0=Math.floor(RB.a*RIB),i1=Math.ceil(RB.b*RIB);rib.geometry.setDrawRange(i0*6,Math.max(0,i1-i0)*6);rib.material.opacity=.95*G;flowTex.offset.x-=dt*1.2;
     water.visible=SC==='hill'&&FX.water>.01;water.scale.set(WAT.w*Math.max(.02,FX.water),1,WAT.d*Math.max(.02,FX.water));water.material.opacity=Math.min(1,FX.water*1.3)*G}
