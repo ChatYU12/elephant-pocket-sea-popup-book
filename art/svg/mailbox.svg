@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="500" viewBox="0 0 340 500">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="28" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="39" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="32" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><rect x="150" y="210" width="38" height="280" rx="10" fill="#8a5a3a" filter="url(#s)"/>
+<g filter="url(#s)">
+ <path d="M62,215 L62,135 Q62,65 135,65 L235,65 Q282,65 282,135 L282,215 Z" fill="#4d9a8f"/>
+ <path d="M62,215 L62,135 Q62,65 120,65 Q172,65 172,135 L172,215 Z" fill="#3b8278"/>
+</g>
+<rect x="84" y="112" width="66" height="16" rx="8" fill="#1f2c55"/>
+<path d="M188,88 L266,88 L266,196 L188,196" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<path d="M262,126 L262,56 L302,56 L302,84 L274,84" fill="#e06d5a" stroke="#e06d5a" stroke-width="8" stroke-linejoin="round"/>
+<circle cx="262" cy="126" r="10" fill="#f7d36a"/>
+<text x="220" y="162" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Microsoft YaHei,sans-serif" font-size="34" font-weight="700" fill="#fffaf0" text-anchor="middle">豆豆</text></g>
+</svg>

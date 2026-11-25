@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="760" viewBox="0 0 420 760">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="22" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="6" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="33" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="26" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><path d="M50,750 Q110,640 210,640 Q310,640 370,750 Z" fill="#9e9585" filter="url(#s)"/>
+<path d="M90,740 Q210,670 330,740" fill="none" stroke="#3b2a1c" stroke-opacity=".35" stroke-width="3" stroke-dasharray="9 7" stroke-linecap="round"/>
+<g filter="url(#s)">
+ <path d="M145,250 L275,250 L308,670 L112,670 Z" fill="#fbf6ec"/>
+ <path d="M138,340 L282,340 L292,440 L128,440 Z" fill="#d9594c"/>
+ <path d="M122,530 L298,530 L306,630 L114,630 Z" fill="#d9594c"/>
+</g>
+<path d="M158,266 L262,266 L292,654 L128,654 Z" fill="none" stroke="#3b2a1c" stroke-opacity=".35" stroke-width="3" stroke-dasharray="9 7" stroke-linecap="round"/>
+<rect x="120" y="232" width="180" height="28" rx="10" fill="#5a4a3a" filter="url(#s)"/>
+<rect x="148" y="138" width="124" height="96" rx="10" fill="#ffe694" filter="url(#s)"/>
+<path d="M180,138 L180,234 M240,138 L240,234" stroke="#5a4a3a" stroke-width="10"/>
+<path d="M124,142 Q210,40 296,142 Z" fill="#d9594c" filter="url(#s)"/>
+<path d="M148,132 Q210,64 272,132" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<circle cx="210" cy="70" r="14" fill="#f7c948"/>
+<rect x="186" y="565" width="48" height="72" rx="24" fill="#7a4e32"/>
+<circle cx="210" cy="390" r="22" fill="#2d6a96" stroke="#fbf6ec" stroke-width="8"/></g>
+</svg>

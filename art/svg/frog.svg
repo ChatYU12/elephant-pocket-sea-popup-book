@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="260" viewBox="0 0 320 260">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="33" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="44" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="37" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><g filter="url(#s)">
+ <ellipse cx="95" cy="215" rx="56" ry="30" fill="#4c8c5e"/>
+ <ellipse cx="225" cy="215" rx="56" ry="30" fill="#4c8c5e"/>
+ <ellipse cx="160" cy="166" rx="92" ry="74" fill="#63ab6e"/>
+ <ellipse cx="160" cy="190" rx="64" ry="44" fill="#dcefc9"/>
+ <circle cx="114" cy="96" r="34" fill="#63ab6e"/>
+ <circle cx="206" cy="96" r="34" fill="#63ab6e"/>
+</g>
+<circle cx="114" cy="96" r="20" fill="#fffaf0"/><circle cx="206" cy="96" r="20" fill="#fffaf0"/>
+<circle cx="118" cy="96" r="10" fill="#2b2420"/><circle cx="202" cy="96" r="10" fill="#2b2420"/>
+<circle cx="121" cy="92" r="3.5" fill="#fff"/><circle cx="205" cy="92" r="3.5" fill="#fff"/>
+<ellipse cx="92" cy="148" rx="14" ry="8" fill="#f3a7b8" opacity=".85"/>
+<ellipse cx="228" cy="148" rx="14" ry="8" fill="#f3a7b8" opacity=".85"/>
+<path d="M126,148 Q160,174 194,148" fill="none" stroke="#2f5a38" stroke-width="7" stroke-linecap="round"/>
+<path d="M108,192 Q160,224 212,192" fill="none" stroke="#3b2a1c" stroke-opacity=".35" stroke-width="3" stroke-dasharray="9 7" stroke-linecap="round"/></g>
+</svg>

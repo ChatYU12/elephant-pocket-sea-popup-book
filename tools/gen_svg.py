@@ -1,6 +1,6 @@
 """Felt-style SVG assets for 大象的口袋海. Each piece stands on its bottom edge (pop-up hinge)."""
 import os, math
-OUT = '/home/claude/book/art/svg'
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'svg')
 os.makedirs(OUT, exist_ok=True)
 
 def felt(seed=3, disp=6):
@@ -220,5 +220,168 @@ svg('paperboat', 420, 280, f'''<path d="M20,150 L400,150 L330,260 L90,260 Z" fil
 <path d="M210,20 L210,150" stroke="#d8d4c8" stroke-width="4"/>
 <path d="M60,170 L360,170" stroke="#d8d4c8" stroke-width="4" stroke-dasharray="10 8"/>
 <path d="M300,196 l8,-14 8,14 -8,8z" fill="#e06d5a"/>''', seed=21, disp=3)
+
+# ---------- lighthouse (beach) ----------
+svg('lighthouse', 420, 760, f'''<path d="M50,750 Q110,640 210,640 Q310,640 370,750 Z" fill="#9e9585" filter="url(#s)"/>
+<path d="M90,740 Q210,670 330,740" {STD}/>
+<g filter="url(#s)">
+ <path d="M145,250 L275,250 L308,670 L112,670 Z" fill="#fbf6ec"/>
+ <path d="M138,340 L282,340 L292,440 L128,440 Z" fill="#d9594c"/>
+ <path d="M122,530 L298,530 L306,630 L114,630 Z" fill="#d9594c"/>
+</g>
+<path d="M158,266 L262,266 L292,654 L128,654 Z" {STD}/>
+<rect x="120" y="232" width="180" height="28" rx="10" fill="#5a4a3a" filter="url(#s)"/>
+<rect x="148" y="138" width="124" height="96" rx="10" fill="#ffe694" filter="url(#s)"/>
+<path d="M180,138 L180,234 M240,138 L240,234" stroke="#5a4a3a" stroke-width="10"/>
+<path d="M124,142 Q210,40 296,142 Z" fill="#d9594c" filter="url(#s)"/>
+<path d="M148,132 Q210,64 272,132" {ST}/>
+<circle cx="210" cy="70" r="14" fill="#f7c948"/>
+<rect x="186" y="565" width="48" height="72" rx="24" fill="#7a4e32"/>
+<circle cx="210" cy="390" r="22" fill="#2d6a96" stroke="#fbf6ec" stroke-width="8"/>''', seed=22)
+
+# ---------- starfish (beach) ----------
+sf_pts = []
+for i in range(10):
+    ang = -math.pi/2 + i * math.pi / 5
+    rr = 145 if i % 2 == 0 else 64
+    sf_pts.append(f'{180 + rr*math.cos(ang):.1f},{185 + rr*math.sin(ang):.1f}')
+sf_dots = ''.join(f'<circle cx="{180+r*math.cos(-math.pi/2+k*2*math.pi/5):.1f}" cy="{185+r*math.sin(-math.pi/2+k*2*math.pi/5):.1f}" r="9" fill="#fde3c8"/>' for k in range(5) for r in (48, 86))
+svg('starfish', 360, 340, f'''<polygon points="{' '.join(sf_pts)}" fill="#eb7a53" stroke="#eb7a53" stroke-width="26" stroke-linejoin="round" filter="url(#s)"/>
+{sf_dots}<circle cx="180" cy="185" r="16" fill="#fde3c8"/>
+<circle cx="164" cy="176" r="6" fill="#3b2f25"/><circle cx="196" cy="176" r="6" fill="#3b2f25"/>
+<path d="M172,194 Q180,202 188,194" fill="none" stroke="#3b2f25" stroke-width="4" stroke-linecap="round"/>''', seed=23, disp=4)
+
+# ---------- bucket & shovel (beach) ----------
+svg('bucket', 380, 380, f'''<g transform="rotate(24 275 180)" filter="url(#s)">
+ <rect x="262" y="75" width="24" height="175" rx="12" fill="#f0a33a"/>
+ <path d="M236,42 Q274,10 312,42 L302,86 L246,86 Z" fill="#f7c948"/>
+</g>
+<path d="M90,150 Q175,55 260,150" fill="none" stroke="#7a4e32" stroke-width="12" stroke-linecap="round"/>
+<g filter="url(#s)">
+ <path d="M74,142 L276,142 L248,354 Q175,368 102,354 Z" fill="#5aa3c8"/>
+ <rect x="64" y="128" width="222" height="32" rx="14" fill="#3b89b6"/>
+</g>
+<path d="M92,174 L258,174 L236,338 Q175,350 114,338 Z" {ST}/>
+<path d="M150,248 l14,-28 14,28 30,4 -22,20 6,30 -28,-14 -28,14 6,-30 -22,-20 z" fill="#f7d36a"/>''', seed=24, disp=4)
+
+# ---------- windmill (road) ----------
+svg('windmill', 520, 680, f'''<g filter="url(#s)">
+ <path d="M170,220 L350,220 L395,650 L125,650 Z" fill="#f3e5cc"/>
+ <path d="M148,228 Q260,90 372,228 Z" fill="#d9594c"/>
+</g>
+<path d="M184,242 L336,242 L374,632 L146,632 Z" {STD}/>
+<path d="M170,214 Q260,114 350,214" {ST}/>
+<rect x="220" y="510" width="80" height="140" rx="40" fill="#8a5a3a"/>
+<rect x="234" y="524" width="52" height="114" rx="26" {ST}/>
+<circle cx="260" cy="360" r="30" fill="#5aa3c8" stroke="#8a5a3a" stroke-width="10"/>
+<g transform="translate(260,215)" filter="url(#s)">
+ <g transform="rotate(28)">
+  <rect x="-12" y="-210" width="24" height="420" rx="8" fill="#8a5a3a"/>
+  <rect x="-210" y="-12" width="420" height="24" rx="8" fill="#8a5a3a"/>
+  <rect x="12" y="-195" width="54" height="150" rx="8" fill="#f7d36a"/>
+  <rect x="-66" y="45" width="54" height="150" rx="8" fill="#f7d36a"/>
+  <rect x="45" y="12" width="150" height="54" rx="8" fill="#e9cf9a"/>
+  <rect x="-195" y="-66" width="150" height="54" rx="8" fill="#e9cf9a"/>
+ </g>
+ <circle cx="0" cy="0" r="24" fill="#d9594c"/>
+</g>''', seed=25)
+
+# ---------- bush with berries (road / hill / pond) ----------
+svg('bush', 520, 320, f'''<g filter="url(#s)">
+ <circle cx="135" cy="215" r="95" fill="#4c8c5e"/>
+ <circle cx="385" cy="215" r="90" fill="#3f7a52"/>
+ <circle cx="260" cy="170" r="120" fill="#5ca06c"/>
+ <rect x="65" y="240" width="390" height="72" rx="34" fill="#4c8c5e"/>
+</g>
+<path d="M90,260 Q140,145 260,115 Q380,145 430,260" {ST}/>
+<circle cx="145" cy="195" r="13" fill="#e06d5a"/><circle cx="170" cy="218" r="11" fill="#f7d36a"/>
+<circle cx="268" cy="145" r="13" fill="#e06d5a"/><circle cx="298" cy="168" r="10" fill="#f3a7b8"/>
+<circle cx="368" cy="205" r="13" fill="#e06d5a"/><circle cx="342" cy="226" r="11" fill="#f7d36a"/>''', seed=26)
+
+# ---------- butterfly (road / hill / pond) ----------
+svg('butterfly', 260, 220, f'''<g filter="url(#s)">
+ <ellipse cx="82" cy="82" rx="56" ry="46" transform="rotate(-24 82 82)" fill="#f7d36a"/>
+ <ellipse cx="178" cy="82" rx="56" ry="46" transform="rotate(24 178 82)" fill="#f7d36a"/>
+ <ellipse cx="92" cy="146" rx="40" ry="34" transform="rotate(18 92 146)" fill="#f3a7b8"/>
+ <ellipse cx="168" cy="146" rx="40" ry="34" transform="rotate(-18 168 146)" fill="#f3a7b8"/>
+</g>
+<circle cx="76" cy="78" r="14" fill="#fffaf0"/><circle cx="184" cy="78" r="14" fill="#fffaf0"/>
+<rect x="118" y="64" width="24" height="104" rx="12" fill="#4a3728"/>
+<path d="M124,66 Q106,24 86,32 M136,66 Q154,24 174,32" fill="none" stroke="#4a3728" stroke-width="6" stroke-linecap="round"/>''', seed=27, disp=3)
+
+# ---------- mailbox (hill) ----------
+svg('mailbox', 340, 500, f'''<rect x="150" y="210" width="38" height="280" rx="10" fill="#8a5a3a" filter="url(#s)"/>
+<g filter="url(#s)">
+ <path d="M62,215 L62,135 Q62,65 135,65 L235,65 Q282,65 282,135 L282,215 Z" fill="#4d9a8f"/>
+ <path d="M62,215 L62,135 Q62,65 120,65 Q172,65 172,135 L172,215 Z" fill="#3b8278"/>
+</g>
+<rect x="84" y="112" width="66" height="16" rx="8" fill="#1f2c55"/>
+<path d="M188,88 L266,88 L266,196 L188,196" {ST}/>
+<path d="M262,126 L262,56 L302,56 L302,84 L274,84" fill="#e06d5a" stroke="#e06d5a" stroke-width="8" stroke-linejoin="round"/>
+<circle cx="262" cy="126" r="10" fill="#f7d36a"/>
+<text x="220" y="162" font-family="PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Microsoft YaHei,sans-serif" font-size="34" font-weight="700" fill="#fffaf0" text-anchor="middle">豆豆</text>''', seed=28, disp=3)
+
+# ---------- fence (hill) ----------
+posts = ''.join(f'<rect x="{40+i*128}" y="48" width="44" height="240" rx="14" fill="#c99a66" filter="url(#s)"/>' for i in range(5))
+posts_st = ''.join(f'<path d="M{62+i*128},70 L{62+i*128},265" {STD}/>' for i in range(5))
+svg('fence', 640, 300, f'''<rect x="20" y="106" width="600" height="32" rx="10" fill="#a8774e" filter="url(#s)"/>
+<rect x="20" y="196" width="600" height="32" rx="10" fill="#a8774e" filter="url(#s)"/>
+{posts}{posts_st}''', seed=29, disp=4)
+
+# ---------- whale plushie toy (room) ----------
+svg('whale_toy', 440, 300, f'''<g filter="url(#s)">
+ <path d="M65,220 Q60,90 190,82 Q305,78 332,168 Q355,172 385,126 Q408,162 372,196 Q410,218 380,248 Q340,226 320,218 Q280,262 175,264 Q80,264 65,220 Z" fill="#5aa3c8"/>
+ <path d="M74,218 Q155,212 255,222 Q220,262 155,262 Q92,262 74,218 Z" fill="#e9f4f8"/>
+</g>
+<path d="M88,195 Q110,104 195,100 Q288,96 312,175" {ST}/>
+<circle cx="132" cy="170" r="11" fill="#1f2c55"/><circle cx="136" cy="166" r="4" fill="#fff"/>
+<ellipse cx="156" cy="192" rx="14" ry="8" fill="#f3a7b8" opacity=".8"/>
+<path d="M180,82 Q170,38 140,46 M186,82 Q196,36 226,46" fill="none" stroke="#9ad4ea" stroke-width="10" stroke-linecap="round"/>''', seed=30, disp=4)
+
+# ---------- potted plant (room) ----------
+svg('plant', 340, 460, f'''<g filter="url(#s)">
+ <path d="M170,295 Q85,205 64,125 Q142,140 176,250 Z" fill="#4c8c5e"/>
+ <path d="M170,295 Q255,205 276,125 Q198,140 164,250 Z" fill="#3f7a52"/>
+ <path d="M170,295 Q128,160 170,48 Q212,160 170,295 Z" fill="#5ca06c"/>
+ <path d="M170,295 Q95,255 48,225 Q112,212 166,275 Z" fill="#5ca06c"/>
+ <path d="M170,295 Q245,255 292,225 Q228,212 174,275 Z" fill="#4c8c5e"/>
+</g>
+<path d="M170,84 L170,275" {ST}/>
+<g filter="url(#s)">
+ <path d="M88,288 L252,288 L230,446 L110,446 Z" fill="#d97b59"/>
+ <rect x="76" y="268" width="188" height="34" rx="12" fill="#e08a68"/>
+</g>
+<path d="M104,316 L236,316 L220,432 L120,432 Z" {ST}/>''', seed=31, disp=4)
+
+# ---------- pond lantern (pond) ----------
+svg('lantern', 320, 560, f'''<g filter="url(#s)">
+ <rect x="80" y="90" width="28" height="460" rx="12" fill="#7a4e32"/>
+ <path d="M90,104 L218,104 Q236,104 236,126 L236,150" fill="none" stroke="#7a4e32" stroke-width="20" stroke-linecap="round"/>
+</g>
+<circle cx="236" cy="235" r="78" fill="#ffe694" opacity=".28"/>
+<g filter="url(#s)">
+ <path d="M192,164 L280,164 L268,144 L204,144 Z" fill="#4a3728"/>
+ <rect x="196" y="164" width="80" height="118" rx="18" fill="#ffe694"/>
+ <rect x="192" y="276" width="88" height="22" rx="10" fill="#4a3728"/>
+</g>
+<ellipse cx="236" cy="222" rx="22" ry="34" fill="#fffaf0" opacity=".85"/>
+<rect x="206" y="174" width="60" height="96" rx="12" {STD}/>''', seed=32, disp=3)
+
+# ---------- frog (pond) ----------
+svg('frog', 320, 260, f'''<g filter="url(#s)">
+ <ellipse cx="95" cy="215" rx="56" ry="30" fill="#4c8c5e"/>
+ <ellipse cx="225" cy="215" rx="56" ry="30" fill="#4c8c5e"/>
+ <ellipse cx="160" cy="166" rx="92" ry="74" fill="#63ab6e"/>
+ <ellipse cx="160" cy="190" rx="64" ry="44" fill="#dcefc9"/>
+ <circle cx="114" cy="96" r="34" fill="#63ab6e"/>
+ <circle cx="206" cy="96" r="34" fill="#63ab6e"/>
+</g>
+<circle cx="114" cy="96" r="20" fill="#fffaf0"/><circle cx="206" cy="96" r="20" fill="#fffaf0"/>
+<circle cx="118" cy="96" r="10" fill="#2b2420"/><circle cx="202" cy="96" r="10" fill="#2b2420"/>
+<circle cx="121" cy="92" r="3.5" fill="#fff"/><circle cx="205" cy="92" r="3.5" fill="#fff"/>
+<ellipse cx="92" cy="148" rx="14" ry="8" fill="#f3a7b8" opacity=".85"/>
+<ellipse cx="228" cy="148" rx="14" ry="8" fill="#f3a7b8" opacity=".85"/>
+<path d="M126,148 Q160,174 194,148" fill="none" stroke="#2f5a38" stroke-width="7" stroke-linecap="round"/>
+<path d="M108,192 Q160,224 212,192" {STD}/>''', seed=33, disp=4)
 
 print(sorted(os.listdir(OUT)))

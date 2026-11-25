@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="460" viewBox="0 0 340 460">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="31" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="42" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="35" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><g filter="url(#s)">
+ <path d="M170,295 Q85,205 64,125 Q142,140 176,250 Z" fill="#4c8c5e"/>
+ <path d="M170,295 Q255,205 276,125 Q198,140 164,250 Z" fill="#3f7a52"/>
+ <path d="M170,295 Q128,160 170,48 Q212,160 170,295 Z" fill="#5ca06c"/>
+ <path d="M170,295 Q95,255 48,225 Q112,212 166,275 Z" fill="#5ca06c"/>
+ <path d="M170,295 Q245,255 292,225 Q228,212 174,275 Z" fill="#4c8c5e"/>
+</g>
+<path d="M170,84 L170,275" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/>
+<g filter="url(#s)">
+ <path d="M88,288 L252,288 L230,446 L110,446 Z" fill="#d97b59"/>
+ <rect x="76" y="268" width="188" height="34" rx="12" fill="#e08a68"/>
+</g>
+<path d="M104,316 L236,316 L220,432 L120,432 Z" fill="none" stroke="#fffaf0" stroke-opacity=".75" stroke-width="3.2" stroke-dasharray="9 7" stroke-linecap="round"/></g>
+</svg>

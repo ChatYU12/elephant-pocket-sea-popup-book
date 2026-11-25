@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="340" viewBox="0 0 360 340">
+<defs><filter id="f" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="23" result="w"/>
+<feDisplacementMap in="SourceGraphic" in2="w" scale="4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="34" result="n"/>
+<feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.24" result="na"/>
+<feComposite in="na" in2="d" operator="in" result="sp"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="27" result="h"/>
+<feColorMatrix in="h" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.4 0 0 0 -0.26" result="ha"/>
+<feComposite in="ha" in2="d" operator="in" result="hi"/>
+<feMerge><feMergeNode in="d"/><feMergeNode in="sp"/><feMergeNode in="hi"/></feMerge>
+</filter>
+<filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#2a1a10" flood-opacity=".28"/></filter></defs>
+<g filter="url(#f)"><polygon points="180.0,40.0 217.6,133.2 317.9,140.2 240.9,204.8 265.2,302.3 180.0,249.0 94.8,302.3 119.1,204.8 42.1,140.2 142.4,133.2" fill="#eb7a53" stroke="#eb7a53" stroke-width="26" stroke-linejoin="round" filter="url(#s)"/>
+<circle cx="180.0" cy="137.0" r="9" fill="#fde3c8"/><circle cx="180.0" cy="99.0" r="9" fill="#fde3c8"/><circle cx="225.7" cy="170.2" r="9" fill="#fde3c8"/><circle cx="261.8" cy="158.4" r="9" fill="#fde3c8"/><circle cx="208.2" cy="223.8" r="9" fill="#fde3c8"/><circle cx="230.5" cy="254.6" r="9" fill="#fde3c8"/><circle cx="151.8" cy="223.8" r="9" fill="#fde3c8"/><circle cx="129.5" cy="254.6" r="9" fill="#fde3c8"/><circle cx="134.3" cy="170.2" r="9" fill="#fde3c8"/><circle cx="98.2" cy="158.4" r="9" fill="#fde3c8"/><circle cx="180" cy="185" r="16" fill="#fde3c8"/>
+<circle cx="164" cy="176" r="6" fill="#3b2f25"/><circle cx="196" cy="176" r="6" fill="#3b2f25"/>
+<path d="M172,194 Q180,202 188,194" fill="none" stroke="#3b2f25" stroke-width="4" stroke-linecap="round"/></g>
+</svg>
